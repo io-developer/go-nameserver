@@ -1,0 +1,31 @@
+{
+    "node1.local.": [
+        {
+            "strategy": "check",
+            "ip": "192.168.1.2",
+            "answer": "{{.domain}} 60 IN A {{.ip}}"
+        },
+        {
+            "strategy": "skip_or_check",
+            "ip": "10.8.0.1",
+            "answer": "{{.domain}} 60 IN A {{.ip}}"
+        }
+    ],
+    "node2.local.": [
+        {
+            "strategy": "check",
+            "ip": "192.168.1.20",
+            "answer": "{{.domain}} 60 IN A {{.ip}}"
+        },
+        {
+            "strategy": "check",
+            "ip": "192.168.1.21",
+            "answer": "{{.domain}} 60 IN A {{.ip}}"
+        },
+        {
+            "strategy": "skip_or_check",
+            "ip": "10.8.0.4",
+            "answer": "{{.domain}} 60 IN A {{.ip}}"
+        }
+    ]
+}
