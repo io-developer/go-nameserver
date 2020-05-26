@@ -9,9 +9,9 @@ import (
 
 // Main props
 var (
-	RecordsMap   map[string][]Record
-	UpstreamAddr string
-	IsVerbose    bool
+	RecordsMap map[string][]Record
+	Upstreams  []string
+	IsVerbose  bool
 )
 
 // ServerLoadRecords ..
@@ -35,9 +35,9 @@ func ServerStart(addr string) {
 	log.Println("Listening ", addr)
 
 	verbosef(
-		"\n  IsVerbose: %t\n  UpstreamAddr: %s\n  Records: %v\n",
+		"\n  IsVerbose: %t\n  Upstreams: %s\n  Records: %v\n",
 		IsVerbose,
-		UpstreamAddr,
+		Upstreams,
 		RecordsMap,
 	)
 
@@ -63,15 +63,18 @@ func handleDNSRequest(w dns.ResponseWriter, r *dns.Msg) {
 		}
 	}
 
-	upstreamResp, err := handleUpstream(r)
+	for _, upstreamAddr := range Upstreams {
+		upstreamResp, err := handleUpstream(upstreamAddr, r)
 
-	if err != nil {
-		verbose("Upstream response: ", upstreamResp)
-		verbose("Upstream error: ", err)
-	}
+		if err != nil {
+			verbose("Upstream response: ", upstreamResp)
+			verbose("Upstream error: ", err)
+		}
 
-	if upstreamResp != nil && err == nil {
-		resp = upstreamResp
+		if upstreamResp != nil && err == nil {
+			resp = upstreamResp
+			break
+		}
 	}
 
 	verbose("Response: ", resp)
@@ -109,16 +112,16 @@ func handleQuery(m *dns.Msg) bool {
 	return queryHandled
 }
 
-func handleUpstream(req *dns.Msg) (*dns.Msg, error) {
-	if UpstreamAddr == "" {
+func handleUpstream(addr string, req *dns.Msg) (*dns.Msg, error) {
+	if addr == "" {
 		verbose("Upstream not defined. Skipping..")
 		return nil, nil
 	}
 
-	verbose("Handling upstream ", UpstreamAddr)
+	verbose("Handling upstream ", addr)
 
 	c := new(dns.Client)
-	resp, _, err := c.Exchange(req, UpstreamAddr)
+	resp, _, err := c.Exchange(req, addr)
 	if err == nil && resp.Rcode != dns.RcodeSuccess {
 		return resp, errors.New("Response code is not success")
 	}
