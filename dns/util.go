@@ -11,13 +11,13 @@ import (
 
 // UtilPingHost ..
 func UtilPingHost(host string, maxSeconds int) bool {
-	cmd := fmt.Sprintf("ping %s -c 1 -w %d > /dev/null && echo reacheable || echo 0", host, maxSeconds)
+	cmd := fmt.Sprintf("ping %s -c 1 -w %d > /dev/null && echo reachable || echo 0", host, maxSeconds)
 	output, err := exec.Command("/bin/sh", "-c", cmd).Output()
 	if err != nil {
 		log.Print(err)
 		return false
 	}
-	isReachable := strings.HasPrefix(string(output), "reacheable")
+	isReachable := strings.HasPrefix(string(output), "reachable")
 	log.Printf("Ping %s: %t", host, isReachable)
 	return isReachable
 }
