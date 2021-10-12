@@ -1,0 +1,7 @@
+.git*
+bin
+.vscode
+LICENSE
+README.md
+records-example.json
+build.sh

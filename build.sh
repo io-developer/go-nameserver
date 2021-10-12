@@ -3,5 +3,5 @@
 export GOBIN="$(pwd)/bin"
 export CGO_ENABLED=0
 
-go build -tags netgo -a
-go install
+go build -o $GOBIN -tags netgo -a
+#go install
